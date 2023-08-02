@@ -1,35 +1,25 @@
-public with sharing class VMO_CaseTriggerHandler {
-  public static Boolean test = true;
-  public VMO_CaseTriggerHandler() {
-  }
-
-  public static void onBeforeUpdate(List<Case> newList, Map<Id, Case> oldMap) {
+private with sharing class VMO_CaseTriggerHandler {
+  private static Boolean checkActive = true;
+  private static void onBeforeUpdate(List<Case> newList, Map<Id, Case> oldMap) {
     for (Case c : newList) {
-      if (c.Subject != oldMap.get(c.Id).Subject && test) {
-        c.addError('Cannot update the Subject field.');
+      if (c.Subject != oldMap.get(c.Id).Subject && checkActive) {
+        VMO_CommonConstant.UPDATE_SUBJECT_FALSE;
       }
     }
   }
-
-  public static void onBeforeInsert(List<Case> newList) {
+  private static void onBeforeInsert(List<Case> newList) {
     for (Case c : newList) {
       if (String.isBlank(c.Subject)) {
-        c.addError('Please input Subject !');
-      } else {
-        String subject = c.Subject;
-        c.Subject = c.CaseNumber + ' ' + subject;
+        VMO_CommonConstant.SUBEJCT_FALSE;
       }
     }
   }
-
-  public static void onAfterUpdate(List<Case> newList, Map<Id, Case> oldMap) {
+  private static void onAfterUpdate(List<Case> newList, Map<Id, Case> oldMap) {
   }
-
-  public static void onAfterInsert(List<Case> newList) {
+  private static void onAfterInsert(List<Case> newList) {
     completeSubject(newList);
   }
-
-  public static void completeSubject(List<Case> targetRecs) {
+  private static void completeSubject(List<Case> targetRecs) {
     List<Case> casesToUpdate = new List<Case>();
     for (Case c : targetRecs) {
       Case updatedCase = new Case(
@@ -38,7 +28,7 @@ public with sharing class VMO_CaseTriggerHandler {
       );
       casesToUpdate.add(updatedCase);
     }
-    test = false;
+    checkActive = false;
     update casesToUpdate;
   }
 }
