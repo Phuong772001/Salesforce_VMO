@@ -11,6 +11,7 @@ public with sharing class VMO_CaseTriggerHandler {
   public static void onAfterInsert(List<Case> newList) {
     completeSubject(newList);
   }
+  // add number to subject
   private static void completeSubject(List<Case> targetRecs) {
     List<Case> casesToUpdate = new List<Case>();
     for (Case c : targetRecs) {
@@ -23,6 +24,7 @@ public with sharing class VMO_CaseTriggerHandler {
     checkActive = false;
     update casesToUpdate;
   }
+  //check update subject
   private static void checkSubjectUpdate(
     List<Case> newList,
     Map<Id, Case> oldMap
@@ -33,6 +35,7 @@ public with sharing class VMO_CaseTriggerHandler {
       }
     }
   }
+  //check Subject not null
   private static void checkSubject(List<Case> newList) {
     for (Case c : newList) {
       if (String.isBlank(c.Subject)) {
